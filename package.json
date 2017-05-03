@@ -86,7 +86,8 @@
     "test": "npm run mocha && npm run lint",
     "mocha": "cross-env NODE_ENV=test mocha",
     "test-watch": "cross-env NODE_ENV=test mocha --watch --reporter spec",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build",
+    "heroku-postbuild": "npm run build"
   },
   "pre-commit": [
     "test"
