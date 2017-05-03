@@ -1,11 +1,50 @@
-mongo-express
+dokku-mongo-express
 ===
+This repo is a small modification [mongo-express](https://github.com/mongo-express/mongo-express) that let you push this project to a dokku instance and link it to a MongoDb database.
 
-[![npm version](https://badge.fury.io/js/mongo-express.svg)](https://www.npmjs.com/package/mongo-express) [![npm](https://img.shields.io/npm/dm/mongo-express.svg)](https://www.npmjs.com/package/mongo-express) [![GitHub stars](https://img.shields.io/github/stars/mongo-express/mongo-express.svg)](https://github.com/mongo-express/mongo-express/stargazers) [![Known Vulnerabilities](https://snyk.io/test/npm/name/badge.svg)](https://snyk.io/test/npm/mongo-express)
+How to use it
+-------------
+
+You have to be admin on your dokku instance. One `mongo-express` instance can only connect to one server.
+
+In the following example replace `dokku.uttnetgroup.net` by your dokku host, `flux2-db.mongo.dokku.uttnetgroup.net` by your app name and `flux2-db` by your db name.
+
+```
+# Clone the repo
+git clone https://github.com/ungdev/dokku-mongo-express
+
+# Create your app
+ssh -t dokku@dokku.uttnetgroup.net apps:create flux2-db.mongo
+
+# Force buildpack to build dev dependencies
+ssh -t dokku@dokku.uttnetgroup.net config:set flux2-db.mongo NPM_CONFIG_PRODUCTION=false
+
+# Link your db with the new app (mongo-express doesnt support multiple hosts)
+ssh -t dokku@dokku.uttnetgroup.net mongo:link flux2-db flux2-db.mongo
+# OR for an external db define this env variable on the app
+MONGO_URL=mongodb://user:password@host:27017/dbname
+
+# (optionnal) Secure it with http access list
+ssh -t dokku@dokku.uttnetgroup.net secure:set flux2-db.mongo <username> <password>
+ssh -t dokku@dokku.uttnetgroup.net secure:enable flux2-db.mongo
+
+# Finally push it to dokku
+git push dokku@dokku.uttnetgroup.net:flux2-db.mongo
+
+# Add vhost if necessary
+ssh -t dokku@dokku.uttnetgroup.net domains:add flux2-db.mongo flux2-db.mongo.dokku.uttnetgroup.net
+```
+
+mongo-express README.md
+-------------
+
+[!(https://www.npmjs.com/package/mongo-express) [![npm](https://img.shields.io/npm/dm/mongo-express.svg)](https://www.npmjs.com/package/mongo-express) [![GitHub stars](https://img.shields.io/github/stars/mongo-express/mongo-express.svg)](https://github.com/mongo-express/mongo-express/stargazers) [![Known Vulnerabilities](https://snyk.io/test/npm/name/badge.svg)](https://snyk.io/test/npm/mongo-express)
 [![Build Status](https://travis-ci.org/mongo-express/mongo-express.svg?branch=master)](https://travis-ci.org/mongo-express/mongo-express)
 
 Web-based MongoDB admin interface written with Node.js, Express and Bootstrap3
 
+dokku config:set mongo-express.flux2-db NPM_CONFIG_PRODUCTION=false
+flux2-db.mongo-express.dokku.uttnetgroup.net
 
 Features
 --------
